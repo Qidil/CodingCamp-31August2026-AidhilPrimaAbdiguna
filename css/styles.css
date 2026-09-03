@@ -1,0 +1,850 @@
+/* ============================================================
+   To-Do List Life Dashboard — Main Stylesheet
+   ============================================================ */
+
+/* ============================================================
+   1. CSS Reset
+   ============================================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================================
+   2. CSS Custom Properties — Light Theme (default)
+   ============================================================ */
+:root {
+    /* --- Background --- */
+    --bg-primary:   #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-card:      #ffffff;
+
+    /* --- Text --- */
+    --text-primary:   #333333;
+    --text-secondary: #666666;
+
+    /* --- Accent --- */
+    --accent-color: #4a90d9;
+    --accent-hover: #357abd;
+
+    /* --- Borders & Feedback --- */
+    --border-color:   #e0e0e0;
+    --error-color:    #d32f2f;
+    --success-color:  #388e3c;
+
+    /* --- Elevation --- */
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    /* --- Shape & Motion --- */
+    --radius:     8px;
+    --transition: 0.2s ease;
+
+    /* --- Spacing scale (internal use) --- */
+    --sp-xs: 0.25rem;   /* 4px  */
+    --sp-sm: 0.5rem;    /* 8px  */
+    --sp-md: 1rem;      /* 16px */
+    --sp-lg: 1.5rem;    /* 24px */
+    --sp-xl: 2rem;      /* 32px */
+    --sp-2xl: 3rem;     /* 48px */
+
+    /* --- Typography --- */
+    --font-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                 Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-mono: 'Courier New', Courier, monospace;
+}
+
+/* ============================================================
+   3. Dark Theme
+   ============================================================ */
+[data-theme="dark"] {
+    --bg-primary:   #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-card:      #0f3460;
+
+    --text-primary:   #eaeaea;
+    --text-secondary: #b0b0b0;
+
+    --accent-color: #64b5f6;
+    --accent-hover: #42a5f5;
+
+    --border-color: #2d3748;
+
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   4. Base — HTML & Body
+   ============================================================ */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-base);
+    font-size: 1rem;
+    line-height: 1.6;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    transition: background-color var(--transition), color var(--transition);
+}
+
+/* ============================================================
+   5. Dashboard Layout
+   ============================================================ */
+.dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--sp-xl);
+    display: grid;
+    gap: var(--sp-xl);
+    /* Default: single column (mobile-first) */
+    grid-template-columns: 1fr;
+}
+
+/* Tablet — 768px to 1023px: two-column grid (Kiro design §Responsive) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .dashboard {
+        padding: var(--sp-lg);
+        gap: var(--sp-lg);
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .greeting-section {
+        grid-column: 1 / -1;   /* full width — row 1 */
+    }
+
+    .focus-timer-section {
+        grid-column: 1 / 2;    /* left — row 2 */
+    }
+
+    .todo-section {
+        grid-column: 2 / 3;    /* right — row 2 */
+    }
+
+    .quick-links-section {
+        grid-column: 1 / -1;   /* full width — row 3 */
+    }
+}
+
+/* Desktop — ≥1024px: two-column grid (Phase 7 revert)
+   Row 1: greeting (full width)
+   Row 2: timer (left) | todo (right)
+   Row 3: quick links (full width)               */
+@media (min-width: 1024px) {
+    .dashboard {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .greeting-section {
+        grid-column: 1 / -1;   /* full width — row 1 */
+    }
+
+    .focus-timer-section {
+        grid-column: 1 / 2;    /* left — row 2 */
+    }
+
+    .todo-section {
+        grid-column: 2 / 3;    /* right — row 2 */
+    }
+
+    .quick-links-section {
+        grid-column: 1 / -1;   /* full width — row 3 */
+    }
+}
+
+/* Mobile — <768px: compact spacing */
+@media (max-width: 767px) {
+    .dashboard {
+        padding: var(--sp-md);
+        gap: var(--sp-md);
+    }
+}
+
+/* ============================================================
+   6. Card — Shared Section Styles
+   ============================================================ */
+.greeting-section,
+.focus-timer-section,
+.todo-section,
+.quick-links-section {
+    background-color: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: var(--sp-lg);
+    transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+/* Section headings */
+.greeting-section h2,
+.focus-timer-section h2,
+.todo-section h2,
+.quick-links-section h2 {
+    margin-bottom: var(--sp-md);
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* ============================================================
+   7. Greeting Section
+   ============================================================ */
+.greeting-section {
+    text-align: center;
+    padding: var(--sp-2xl) var(--sp-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-lg);
+}
+
+.datetime-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-xs);
+}
+
+.current-date {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.current-time {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.greeting-text {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0;
+}
+
+/* Mobile greeting adjustments */
+@media (max-width: 767px) {
+    .greeting-section {
+        padding: var(--sp-lg) var(--sp-md);
+    }
+
+    .greeting-text {
+        font-size: 1.5rem;
+    }
+}
+
+/* ============================================================
+   8. Focus Timer Section
+   ============================================================ */
+.focus-timer-content {
+    text-align: center;
+}
+
+.timer-display {
+    font-size: 4rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--accent-color);
+    margin: var(--sp-lg) 0;
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 767px) {
+    .timer-display {
+        font-size: 3rem;
+    }
+}
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--sp-md);
+    flex-wrap: wrap;
+}
+
+/* Duration form — Hours/Minutes/Seconds + Set (Phase 7) */
+.timer-duration-form {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: var(--sp-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--sp-md);
+}
+
+.duration-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-xs);
+    width: 72px;
+}
+
+.duration-field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.duration-field input[type="number"] {
+    width: 100%;
+    padding: var(--sp-xs) var(--sp-sm);
+    font-size: 1rem;
+    text-align: center;
+}
+
+.btn-set-duration {
+    padding: var(--sp-xs) var(--sp-md);
+    font-size: 0.875rem;
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+.btn-set-duration:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-set-duration:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#timer-error {
+    margin-bottom: var(--sp-xs);
+}
+
+/* Mobile — duration fields stay inline but compact */
+@media (max-width: 767px) {
+    .timer-duration-form {
+        gap: var(--sp-xs);
+    }
+
+    .duration-field {
+        width: 64px;
+    }
+}
+
+/* Completion state — applied to #timer-display when countdown reaches zero */
+.timer-complete {
+    color: var(--success-color);
+}
+
+/* In-app completion message shown below timer controls */
+.timer-message {
+    margin-top: var(--sp-md);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--success-color);
+    text-align: center;
+}
+
+.btn-start {
+    background-color: var(--success-color);
+    color: #fff;
+}
+
+.btn-start:hover {
+    opacity: 0.88;
+}
+
+.btn-stop {
+    background-color: #ffc107;   /* warning — not in variable set, kept neutral */
+    color: #333333;
+}
+
+.btn-stop:hover {
+    opacity: 0.88;
+}
+
+.btn-reset {
+    background-color: var(--error-color);
+    color: #fff;
+}
+
+.btn-reset:hover {
+    opacity: 0.88;
+}
+
+/* ============================================================
+   9. General Button Styles (.btn)
+   ============================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-sm) var(--sp-lg);
+    font-family: var(--font-base);
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color var(--transition), opacity var(--transition),
+                transform var(--transition);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* Add Task button */
+.btn-add-task {
+    width: 100%;
+    margin-top: var(--sp-sm);
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+.btn-add-task:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Edit form buttons */
+.btn-save-edit {
+    background-color: var(--success-color);
+    color: #fff;
+}
+
+.btn-save-edit:hover {
+    opacity: 0.88;
+}
+
+.btn-cancel-edit {
+    background-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-cancel-edit:hover {
+    opacity: 0.8;
+}
+
+/* ============================================================
+   10. Input / Textarea / Select — Base Styles
+   ============================================================ */
+input[type="text"],
+input[type="url"],
+input[type="email"],
+textarea,
+select {
+    width: 100%;
+    padding: var(--sp-sm) var(--sp-md);
+    font-family: var(--font-base);
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    appearance: auto;
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="email"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.2);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-secondary);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* ============================================================
+   11. Form Groups
+   ============================================================ */
+.form-group {
+    margin-bottom: var(--sp-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--sp-xs);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+/* ============================================================
+   12. To-Do Section
+   ============================================================ */
+.todo-form {
+    margin-bottom: var(--sp-md);
+}
+
+/* Sorting controls */
+.todo-sort {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-sm);
+    margin: var(--sp-md) 0;
+}
+
+.todo-sort label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.todo-sort select {
+    flex: 1;
+    padding: var(--sp-xs) var(--sp-sm);
+    cursor: pointer;
+}
+
+/* Task list container */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    margin-top: var(--sp-md);
+}
+
+/* Individual task card */
+.task-item {
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: var(--sp-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    transition: border-color var(--transition);
+}
+
+.task-item:hover {
+    border-color: var(--accent-color);
+}
+
+.task-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-sm);
+}
+
+.task-complete {
+    flex-shrink: 0;
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+}
+
+.task-title {
+    flex: 1;
+    font-weight: 600;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+/* Completed state */
+.task-item.task-completed .task-title {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.task-description {
+    padding-left: var(--sp-lg);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+/* Expand / edit / delete inline buttons */
+.expand-btn,
+.edit-btn,
+.delete-btn {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color var(--transition), background-color var(--transition),
+                border-color var(--transition);
+}
+
+.expand-btn:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.edit-btn:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.delete-btn:hover {
+    color: var(--error-color);
+    border-color: var(--error-color);
+}
+
+/* Edit form inside task */
+.task-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    padding-top: var(--sp-sm);
+    border-top: 1px solid var(--border-color);
+}
+
+.edit-title,
+.edit-description {
+    width: 100%;
+}
+
+.edit-actions {
+    display: flex;
+    gap: var(--sp-sm);
+}
+
+/* ============================================================
+   13. Quick Links Section
+   ============================================================ */
+
+/* Form — desktop/tablet: single row */
+.link-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-sm);
+    flex-wrap: wrap;
+}
+
+#link-name,
+#link-url {
+    flex: 1;
+    min-width: 0;
+    padding: var(--sp-sm) var(--sp-md);
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color var(--transition);
+}
+
+#link-name:focus,
+#link-url:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.2);
+}
+
+#link-name::placeholder,
+#link-url::placeholder {
+    color: var(--text-secondary);
+}
+
+.btn-add-link {
+    width: auto;
+    margin-top: 0;
+    flex-shrink: 0;
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+.btn-add-link:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Mobile — form stacks vertically */
+@media (max-width: 767px) {
+    .link-form {
+        flex-direction: column;
+    }
+
+    #link-name,
+    #link-url {
+        width: 100%;
+        flex: none;
+    }
+
+    .btn-add-link {
+        width: 100%;
+    }
+}
+
+/* Link list — wrapping row of pills */
+.link-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* Individual pill */
+.link-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    background-color: var(--accent-color);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.link-anchor {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background var(--transition);
+}
+
+.link-anchor:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* × delete button — right side of pill */
+.delete-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 100%;
+    padding: 0 0.4rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background var(--transition);
+}
+
+.delete-link-btn:hover {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.delete-link-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+}
+
+/* Error message */
+#link-error {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ============================================================
+   14. Fixed Theme Toggle Button (#theme-toggle / .fixed-button.theme-toggle)
+   ============================================================ */
+#theme-toggle,
+.fixed-button.theme-toggle {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition), transform var(--transition);
+}
+
+#theme-toggle:hover,
+.fixed-button.theme-toggle:hover {
+    background-color: var(--accent-hover);
+    transform: scale(1.08);
+}
+
+#theme-toggle:active,
+.fixed-button.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+#theme-toggle:focus-visible,
+.fixed-button.theme-toggle:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 3px;
+}
+
+/* ============================================================
+   15. Error & Success Message Styles
+   ============================================================ */
+.error-message {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: var(--sp-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-xs);
+}
+
+.success-message {
+    color: var(--success-color);
+    font-size: 0.875rem;
+    margin-top: var(--sp-xs);
+}
+
+/* ============================================================
+   16. Utility Classes
+   ============================================================ */
+
+/* Hard hide — removes from layout and accessibility tree */
+.hidden {
+    display: none !important;
+}
+
+/* Soft collapse — removes from layout, preserves DOM order */
+.collapsed {
+    display: none;
+}
+
+/* Screen-reader-only */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Text helpers */
+.text-center    { text-align: center; }
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-accent    { color: var(--accent-color); }
+.text-error     { color: var(--error-color); }
+.text-success   { color: var(--success-color); }

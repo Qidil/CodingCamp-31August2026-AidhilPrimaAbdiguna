@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="To-Do List Life Dashboard - A personal productivity application">
+    <title>To-Do List Life Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <main class="dashboard">
+        <!-- Greeting Component -->
+        <section id="greeting-component" class="greeting-section" aria-label="Greeting">
+            <div id="datetime-display" class="datetime-display">
+                <p class="current-date" id="current-date"></p>
+                <p class="current-time" id="current-time"></p>
+            </div>
+            <h1 id="greeting-text" class="greeting-text">Good morning!</h1>
+        </section>
+
+        <!-- Focus Timer Component -->
+        <section class="focus-timer-section" aria-label="Focus Timer">
+            <div class="focus-timer-content">
+                <h2>Focus Timer</h2>
+                <div class="timer-duration-form" role="group" aria-label="Set timer duration">
+                    <div class="duration-field">
+                        <label for="duration-hours">Hours</label>
+                        <input type="number" id="duration-hours" class="duration-h" min="0" step="1" inputmode="numeric" value="0" aria-label="Timer duration hours">
+                    </div>
+                    <div class="duration-field">
+                        <label for="duration-minutes">Minutes</label>
+                        <input type="number" id="duration-minutes" class="duration-m" min="0" step="1" inputmode="numeric" value="25" aria-label="Timer duration minutes">
+                    </div>
+                    <div class="duration-field">
+                        <label for="duration-seconds">Seconds</label>
+                        <input type="number" id="duration-seconds" class="duration-s" min="0" step="1" inputmode="numeric" value="0" aria-label="Timer duration seconds">
+                    </div>
+                    <button type="button" id="set-duration-btn" class="btn btn-set-duration">Set</button>
+                </div>
+                <p id="timer-error" class="timer-error error-message hidden" role="alert" aria-live="polite"></p>
+                <div class="timer-display" id="timer-display" role="timer" aria-live="polite">25:00</div>
+                <div class="timer-controls">
+                    <button type="button" id="timer-start" class="btn btn-start" aria-label="Start timer">Start</button>
+                    <button type="button" id="timer-stop" class="btn btn-stop" aria-label="Stop timer">Stop</button>
+                    <button type="button" id="timer-reset" class="btn btn-reset" aria-label="Reset timer">Reset</button>
+                </div>
+                <p id="timer-message" class="timer-message hidden" role="status" aria-live="polite"></p>
+            </div>
+        </section>
+
+        <!-- To-Do List Component -->
+        <section id="todo-list-component" class="todo-section" aria-label="To-Do List">
+            <div class="todo-content">
+                <h2>To-Do List</h2>
+                
+                <!-- Add Task Form -->
+                <form id="task-form" class="todo-form">
+                    <div class="form-group">
+                        <label for="task-title">Task Title</label>
+                        <input type="text" id="task-title" name="title" placeholder="Enter task title" required aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description">Description (optional)</label>
+                        <textarea id="task-description" name="description" placeholder="Enter task description" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-add-task">Add Task</button>
+                    <p id="task-error" class="error-message hidden" role="alert" aria-live="polite"></p>
+                </form>
+
+                <!-- Sorting Options -->
+                <div id="sorting-controls" class="todo-sort">
+                    <label for="sort-select">Sort by:</label>
+                    <select id="sort-select" aria-label="Sort tasks">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="alphabetical">Alphabetical</option>
+                        <option value="incomplete">Incomplete First</option>
+                    </select>
+                </div>
+
+                <!-- Task List -->
+                <div id="task-list" class="task-list" role="list" aria-label="Task list">
+                    <!-- Tasks will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Task Item Template (hidden, used for cloning) -->
+        <template id="task-item-template">
+            <div class="task-item" data-task-id="">
+                <div class="task-header">
+                    <input type="checkbox" class="task-complete" aria-label="Mark task as complete">
+                    <span class="task-title"></span>
+                    <button type="button" class="expand-btn" aria-label="Expand description" aria-expanded="false">▶</button>
+                    <button type="button" class="edit-btn" aria-label="Edit task">Edit</button>
+                    <button type="button" class="delete-btn" aria-label="Delete task">Delete</button>
+                </div>
+                <div class="task-description collapsed" aria-hidden="true"></div>
+                <div class="task-edit-form hidden">
+                    <div class="form-group">
+                        <input type="text" class="edit-title" placeholder="Task title" aria-label="Edit task title">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="edit-description" placeholder="Description (optional)" rows="2" aria-label="Edit task description"></textarea>
+                    </div>
+                    <p class="edit-error error-message hidden" role="alert" aria-live="polite"></p>
+                    <div class="edit-actions">
+                        <button type="button" class="btn btn-save-edit">Save</button>
+                        <button type="button" class="btn btn-cancel-edit">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Link Item Template (hidden, used for cloning) -->
+        <template id="link-item-template">
+            <div class="link-item" data-link-id="">
+                <a href="" class="link-anchor" target="_blank" rel="noopener noreferrer"></a>
+                <button type="button" class="delete-link-btn" aria-label="Delete link">×</button>
+            </div>
+        </template>
+
+        <!-- Quick Links Component -->
+        <section class="quick-links-section" aria-label="Quick Links">
+            <div class="quick-links-content">
+                <h2>Quick Links</h2>
+                
+                <!-- Add Link Form -->
+                <form id="link-form" class="link-form">
+                    <input type="text" id="link-name" name="name" placeholder="Name" required aria-label="Link name" aria-required="true">
+                    <input type="url" id="link-url" name="url" placeholder="URL" required aria-label="Link URL" aria-required="true">
+                    <button type="submit" class="btn btn-add-link">Add Link</button>
+                </form>
+                <p id="link-error" class="error-message hidden" role="alert" aria-live="polite"></p>
+
+                <!-- Links List -->
+                <div id="link-list" class="link-list" role="list" aria-label="Quick links list">
+                    <!-- Link items will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Theme Toggle Button -->
+    <button type="button" id="theme-toggle" class="fixed-button theme-toggle" aria-label="Toggle theme">
+        <span class="theme-icon" aria-hidden="true">&#x1F313;</span>
+    </button>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
